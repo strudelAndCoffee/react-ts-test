@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../css/select.module.css';
 
 type SelectOption = {
     label: string
-    value: any
+    value: string | number
 }
 
 type SelectProps = {
@@ -21,12 +21,16 @@ export function Select({ value, onChange, options }: SelectProps) {
     }
 
     function selectOption(option: SelectOption) {
-        onChange(option)
+        if (option !== value) onChange(option)
     }
 
     function isOptionSelected(option: SelectOption) {
         return option === value
     }
+
+    useEffect(() => {
+        if (isOpen) setHighlightedIndex(0)
+    }, [isOpen])
     
     return (
         <div
@@ -48,7 +52,7 @@ export function Select({ value, onChange, options }: SelectProps) {
             <ul className={`${styles.options} ${isOpen ? styles.show : ""}`}>
                 {options.map((option, index) => (
                     <li
-                        key={option.label}
+                        key={option.value}
                         onClick={e => {
                             e.stopPropagation()
                             selectOption(option)
